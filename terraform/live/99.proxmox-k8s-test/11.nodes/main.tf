@@ -69,10 +69,8 @@ module "k8s-node" {
   cpu_cores    = each.value.cpu_cores
   memory       = each.value.memory
   disk_size    = each.value.disk_size
-  username     = "ubuntu"
   datastore_id = "local"
   networks     = each.value.networks
-  ssh_keys     = local.ssh_keys
   cloud_init_data = templatefile("../99.cloud-init/general-vm-config.yaml", {
     hostname = each.value.vm_name
     username = "ubuntu"

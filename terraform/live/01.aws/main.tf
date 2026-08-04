@@ -12,9 +12,6 @@ locals {
     }
   }
 
-  backup_bucket_ids = [
-    for m in module.backup_s3_buckets : m.bucket_id
-  ]
   backup_bucket_arns = [
     for m in module.backup_s3_buckets : m.bucket_arn
   ]
@@ -36,7 +33,8 @@ module "backup_s3_buckets" {
 
 // SNS
 resource "aws_sns_topic" "email_notifications" {
-  name = "noti-on-backup-failure-topic"
+  name              = "noti-on-backup-failure-topic"
+  kms_master_key_id = "alias/aws/sns"
 }
 
 resource "aws_sns_topic_subscription" "admin_email_subscription" {

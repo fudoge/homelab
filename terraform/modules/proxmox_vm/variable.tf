@@ -38,13 +38,6 @@ variable "networks" {
   }))
 }
 
-variable "ssh_keys" {
-  type = list(string)
-}
-
-variable "username" {
-  type = string
-}
 variable "cloud_init_data" {
   type = string
 }

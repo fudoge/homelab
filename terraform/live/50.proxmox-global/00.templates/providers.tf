@@ -7,4 +7,3 @@ provider "proxmox" {
     username = "root"
   }
 }
-
