@@ -13,6 +13,7 @@ repos:
 
       - id: check-yaml
         stages: [pre-commit]
+        exclude: ^terraform/live/99\.proxmox-k8s-test/99\.cloud-init/
       - id: check-json
         stages: [pre-commit]
       - id: check-toml
@@ -39,6 +40,11 @@ repos:
           - --tf-init-args=-backend=false
       - id: terraform_tflint
         stages: [pre-commit]
+      - id: terraform_trivy
+        stages: [pre-commit]
+        args:
+          - --args=--severity=HIGH,CRITICAL
+          - --args=--skip-dirs=**/.terraform
       - id: terraform_docs
         stages: [pre-commit]
         files: ^terraform/modules/
