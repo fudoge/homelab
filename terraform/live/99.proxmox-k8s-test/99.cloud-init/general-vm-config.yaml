@@ -1,0 +1,20 @@
+#cloud-config
+hostname: ${hostname}
+manage_etc_hosts: true
+user: ${username}
+ssh_authorized_keys:
+%{ for key in ssh_keys ~}
+  - ${key}
+%{ endfor ~}
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - qemu-guest-agent
+  - curl
+  - vim
+
+runcmd:
+  - systemctl enable --now qemu-guest-agent
+  - echo "Cloud-init finished at $(date)" > /var/log/cloud-init-done.log
