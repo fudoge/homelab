@@ -33,6 +33,7 @@ No modules.
 | <a name="input_cpu_cores"></a> [cpu\_cores](#input\_cpu\_cores) | n/a | `number` | n/a | yes |
 | <a name="input_datastore_id"></a> [datastore\_id](#input\_datastore\_id) | n/a | `string` | n/a | yes |
 | <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size) | n/a | `number` | n/a | yes |
+| <a name="input_extra_disks"></a> [extra\_disks](#input\_extra\_disks) | n/a | <pre>list(object({<br/>    interface = string<br/>    size      = number<br/>  }))</pre> | n/a | yes |
 | <a name="input_memory"></a> [memory](#input\_memory) | n/a | `number` | n/a | yes |
 | <a name="input_nameservers"></a> [nameservers](#input\_nameservers) | n/a | `list(string)` | n/a | yes |
 | <a name="input_networks"></a> [networks](#input\_networks) | n/a | <pre>list(object({<br/>    bridge = string<br/>    ip     = string<br/>    gw     = string<br/>  }))</pre> | n/a | yes |
