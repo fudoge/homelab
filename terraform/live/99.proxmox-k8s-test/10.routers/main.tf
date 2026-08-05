@@ -27,6 +27,7 @@ module "frrouter" {
   memory       = 2048
   datastore_id = "local"
   disk_size    = 20
+  extra_disks  = []
   nameservers  = ["192.168.0.1", "1.1.1.1", "8.8.8.8"]
   networks = [
     { bridge = "vmbr0", ip = "192.168.0.8/24", gw = "192.168.0.1" },

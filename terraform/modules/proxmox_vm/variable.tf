@@ -30,6 +30,13 @@ variable "disk_size" {
   type = number
 }
 
+variable "extra_disks" {
+  type = list(object({
+    interface = string
+    size      = number
+  }))
+}
+
 variable "nameservers" {
   type = list(string)
 }

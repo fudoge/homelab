@@ -27,31 +27,34 @@ locals {
 
   k8s_nodes = {
     "cp-1" : {
-      vm_name   = "cp-1"
-      vm_id     = 1010,
-      cpu_cores = 2
-      memory    = 4096
-      disk_size = 100
+      vm_name     = "cp-1"
+      vm_id       = 1010,
+      cpu_cores   = 2
+      memory      = 4096
+      disk_size   = 100
+      extra_disks = []
       networks = [
         { bridge = "vmbr1", ip = "192.168.10.10/24", gw = local.frroute_ip }
       ]
     }
     "worker-1" : {
-      vm_name   = "worker-1"
-      vm_id     = 1100,
-      cpu_cores = 4
-      memory    = 8192
-      disk_size = 100
+      vm_name     = "worker-1"
+      vm_id       = 1100,
+      cpu_cores   = 4
+      memory      = 8192
+      disk_size   = 100
+      extra_disks = []
       networks = [
         { bridge = "vmbr1", ip = "192.168.10.100/24", gw = local.frroute_ip }
       ]
     }
     "worker-2" : {
-      vm_name   = "worker-2"
-      vm_id     = 1101,
-      cpu_cores = 4
-      memory    = 8192
-      disk_size = 100
+      vm_name     = "worker-2"
+      vm_id       = 1101,
+      cpu_cores   = 4
+      memory      = 8192
+      disk_size   = 100
+      extra_disks = []
       networks = [
         { bridge = "vmbr1", ip = "192.168.10.101/24", gw = local.frroute_ip }
       ]
@@ -69,6 +72,7 @@ module "k8s-node" {
   cpu_cores    = each.value.cpu_cores
   memory       = each.value.memory
   disk_size    = each.value.disk_size
+  extra_disks  = each.extra_disks
   datastore_id = "local"
   nameservers  = ["192.168.0.1", "1.1.1.1", "8.8.8.8"]
   networks     = each.value.networks

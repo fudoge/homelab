@@ -29,6 +29,18 @@ resource "proxmox_virtual_environment_vm" "vm" {
     size         = var.disk_size
   }
 
+  dynamic "disk" {
+    for_each = var.extra_disks
+
+    content {
+      datastore_id = var.datastore_id
+      interface    = each.interface
+      iothread     = true
+      discard      = "on"
+      size         = each.size
+    }
+  }
+
   dynamic "network_device" {
     for_each = var.networks
     content {
