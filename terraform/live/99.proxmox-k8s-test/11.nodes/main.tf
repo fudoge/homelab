@@ -70,6 +70,7 @@ module "k8s-node" {
   memory       = each.value.memory
   disk_size    = each.value.disk_size
   datastore_id = "local"
+  nameservers  = ["192.168.0.1", "1.1.1.1", "8.8.8.8"]
   networks     = each.value.networks
   cloud_init_data = templatefile("../99.cloud-init/general-vm-config.yaml", {
     hostname = each.value.vm_name

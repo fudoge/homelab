@@ -40,6 +40,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
     datastore_id      = var.datastore_id
     user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
 
+    dns = var.nameservers
+
     dynamic "ip_config" {
       for_each = var.networks
       content {

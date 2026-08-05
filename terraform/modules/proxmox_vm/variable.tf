@@ -30,6 +30,10 @@ variable "disk_size" {
   type = number
 }
 
+variable "nameservers" {
+  type = list(string)
+}
+
 variable "networks" {
   type = list(object({
     bridge = string
