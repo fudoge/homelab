@@ -72,7 +72,7 @@ module "k8s-node" {
   cpu_cores    = each.value.cpu_cores
   memory       = each.value.memory
   disk_size    = each.value.disk_size
-  extra_disks  = each.extra_disks
+  extra_disks  = each.value.extra_disks
   datastore_id = "local"
   nameservers  = ["192.168.0.1", "1.1.1.1", "8.8.8.8"]
   networks     = each.value.networks
