@@ -34,6 +34,7 @@ No modules.
 | <a name="input_datastore_id"></a> [datastore\_id](#input\_datastore\_id) | n/a | `string` | n/a | yes |
 | <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size) | n/a | `number` | n/a | yes |
 | <a name="input_memory"></a> [memory](#input\_memory) | n/a | `number` | n/a | yes |
+| <a name="input_nameservers"></a> [nameservers](#input\_nameservers) | n/a | `list(string)` | n/a | yes |
 | <a name="input_networks"></a> [networks](#input\_networks) | n/a | <pre>list(object({<br/>    bridge = string<br/>    ip     = string<br/>    gw     = string<br/>  }))</pre> | n/a | yes |
 | <a name="input_node_name"></a> [node\_name](#input\_node\_name) | n/a | `string` | n/a | yes |
 | <a name="input_template_id"></a> [template\_id](#input\_template\_id) | n/a | `string` | n/a | yes |
