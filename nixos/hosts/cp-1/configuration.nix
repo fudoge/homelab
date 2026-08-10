@@ -7,6 +7,10 @@
   tailnet = "tail274d3c.ts.net";
   apiName = "${config.networking.hostName}.${tailnet}";
 in {
+  imports = [
+    ./hardware-configuration.nix
+  ];
+
   nixpkgs.hostPlatform = "x86_64-linux";
 
   boot.loader.systemd-boot.enable = true;
