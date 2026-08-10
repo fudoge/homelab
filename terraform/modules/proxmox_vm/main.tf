@@ -34,10 +34,10 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
     content {
       datastore_id = var.datastore_id
-      interface    = each.interface
+      interface    = disk.value.interface
       iothread     = true
       discard      = "on"
-      size         = each.size
+      size         = disk.value.size
     }
   }
 
