@@ -24,7 +24,7 @@ repos:
 
       - id: check-yaml
         stages: [pre-commit]
-        exclude: ^terraform/live/99\.proxmox-k8s-test/99\.cloud-init/
+        exclude: ^terraform/live/50\.proxmox-global/99\.cloud-init/
       - id: check-json
         stages: [pre-commit]
       - id: check-toml
