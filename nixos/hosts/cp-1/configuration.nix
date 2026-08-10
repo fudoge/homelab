@@ -49,7 +49,12 @@ in {
       # 2380
 
       4240 # Cilium Health
+      4244 # Hubble server
+      4245 # Hubble Relay
       6443 # API Server
+      9962 # Prometheus metrics (cilium-agent)
+      9963 # Prometheus metrics (cilium-operator)
+      9964 # Prometheus metrics (cilium-envoy)
       10250 # Kubelet
     ];
 
