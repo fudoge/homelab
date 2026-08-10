@@ -53,6 +53,13 @@ in {
       10250 # Kubelet
     ];
 
+    allowedTCPPortRanges = [
+      {
+        from = 10000;
+        to = 20000;
+      }
+    ];
+
     allowedUDPPorts = [
       8472 # Cilium VXLAN
 
