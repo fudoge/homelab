@@ -36,6 +36,11 @@ in {
   networking.hostName = "home-cp-1";
   networking.networkmanager.enable = true;
 
+  fileSystems."/var/lib/rancher/k3s/storage" = {
+    device = "/dev/disk/by-label/LOCALPV";
+    fsType = "ext4";
+  };
+
   time.timeZone = "Asia/Seoul";
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -92,6 +97,7 @@ in {
     sysdig
     util-linux
     btop
+    parted
     python3
   ];
 
