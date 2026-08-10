@@ -11,8 +11,6 @@ in {
     ./hardware-configuration.nix
   ];
 
-  nixpkgs.hostPlatform = "x86_64-linux";
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -34,8 +32,6 @@ in {
     dates = "weekly";
     options = "--delete-older-than 3d";
   };
-
-  swapDevices = lib.mkForce [];
 
   networking.hostName = "home-cp-1";
   networking.networkmanager.enable = true;
