@@ -6,6 +6,8 @@
   tailnet = "tail274d3c.ts.net";
   apiName = "${config.networking.hostName}.${tailnet}";
 in {
+  nixpkgs.hostPlatform = "x86_64-linux";
+
   nix.settings.experimental-features = ["nix-command" "flakes"];
   nix.gc = {
     automatic = true;
@@ -13,11 +15,10 @@ in {
     options = "--delete-older-than 3d";
   };
 
-  virtualisation.qemuGuest.enbale = true;
-
   networking.hostName = "home-cp-1";
   networking.networkmanager.enable = true;
 
+  services.qemuGuest.enable = true;
   services.openssh = {
     enable = true;
     settings = {
@@ -48,7 +49,7 @@ in {
     enable = true;
   };
 
-  environments.systemPackages = with pkgs; [
+  environment.systemPackages = with pkgs; [
     bash
     git
     github-cli
@@ -74,6 +75,8 @@ in {
   ];
 
   environment.variables.EDITOR = "vim";
+
+  system.stateVersion = "26.05";
 
   users.users.chaewoon = {
     isNormalUser = true;
