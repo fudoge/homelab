@@ -64,6 +64,9 @@ in {
 
       "--disable traefik"
       "--disable servicelb"
+      "--disable local-storage"
+      "--disable metrics-server"
+
       "--flannel-backend=none"
       "--disable-kube-proxy"
       "--disable-network-policy"
