@@ -22,7 +22,7 @@ in {
   services.openssh = {
     enable = true;
     settings = {
-      passwordAuthentication = false;
+      PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
       PermitRootLogin = "no";
       AllowUsers = ["chaewoon"];
