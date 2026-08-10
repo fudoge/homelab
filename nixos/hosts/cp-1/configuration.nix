@@ -35,6 +35,8 @@ in {
 
   networking.hostName = "home-cp-1";
   networking.networkmanager.enable = true;
+  networking.firewall.enable = false;
+  networking.firewall.checkReversePath = false;
 
   fileSystems."/var/lib/rancher/k3s/storage" = {
     device = "/dev/disk/by-label/LOCALPV";
