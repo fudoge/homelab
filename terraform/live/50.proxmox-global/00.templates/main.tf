@@ -23,3 +23,13 @@ module "ubuntu_template" {
   datastore_id  = "local"
   image_url     = each.value.image_url
 }
+
+module "nixos_template" {
+  source = "${path.module}/../../../modules/proxmox_vm_template"
+
+  template_id   = 102
+  template_name = "nixos-26-05"
+  ve_node_name  = "pve-01"
+  datastore_id  = "local"
+  image_url     = "https://channels.nixos.org/nixos-26.05/latest-nixos-minimal-x86_64-linux.iso"
+}

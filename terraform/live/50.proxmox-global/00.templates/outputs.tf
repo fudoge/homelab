@@ -3,3 +3,7 @@ output "ubuntu_template_id" {
     name => template.id
   }
 }
+
+output "nixos_template_id" {
+  value = module.nixos_template.id
+}
