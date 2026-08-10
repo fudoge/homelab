@@ -9,6 +9,9 @@
 in {
   nixpkgs.hostPlatform = "x86_64-linux";
 
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
   boot.kernelModules = [
     "overlay"
     "br_netfilter"
@@ -32,6 +35,9 @@ in {
 
   networking.hostName = "home-cp-1";
   networking.networkmanager.enable = true;
+
+  time.timeZone = "Asia/Seoul";
+  i18n.defaultLocale = "en_US.UTF-8";
 
   services.qemuGuest.enable = true;
   services.openssh = {
