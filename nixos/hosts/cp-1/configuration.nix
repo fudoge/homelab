@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }: let
   tailnet = "tail274d3c.ts.net";
@@ -8,12 +9,26 @@
 in {
   nixpkgs.hostPlatform = "x86_64-linux";
 
+  boot.kernelModules = [
+    "overlay"
+    "br_netfilter"
+  ];
+
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = 1;
+
+    "net.bridge.bridge-nf-call-iptables" = 1;
+    "net.bridge.bridge-nf-call-ip6tables" = 1;
+  };
+
   nix.settings.experimental-features = ["nix-command" "flakes"];
   nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 3d";
   };
+
+  swapDevices = lib.mkForce [];
 
   networking.hostName = "home-cp-1";
   networking.networkmanager.enable = true;
