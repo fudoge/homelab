@@ -57,7 +57,8 @@ module "k8s" {
 
   disk_size = 64
   extra_disks = [
-    { interface = "virtio1", size = 300 }
+    { interface = "virtio1", size = 128 },
+    { interface = "virtio2", size = 256 }
   ]
 
   cloud_init_data = ""
