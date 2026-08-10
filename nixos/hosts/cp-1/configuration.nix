@@ -63,11 +63,26 @@ in {
     allowedUDPPorts = [
       8472 # Cilium VXLAN
 
+      41641 # Tailscale
+
       # Wireguard Enc
       # 51871
     ];
 
-    trustedInterfaces = ["tailscale0"];
+    allowedUDPPortRanges = [
+      {
+        from = 10000;
+        to = 20000;
+      }
+    ];
+
+    trustedInterfaces = [
+      "cilium_host"
+      "cilium_net"
+      "cilim_vxlan"
+      "lxc+"
+      "tailscale0"
+    ];
   };
 
   fileSystems."/var/lib/rancher/k3s/storage" = {
