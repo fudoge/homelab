@@ -22,9 +22,9 @@
     device = "/dev/disk/by-label/NIXBOOT";
     fsType = "vfat";
     options = ["fmask=0022" "dmask=0022"];
-
-    swapDevices = [];
-
-    nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   };
+
+  swapDevices = [];
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
