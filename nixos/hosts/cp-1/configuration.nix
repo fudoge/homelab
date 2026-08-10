@@ -35,8 +35,33 @@ in {
 
   networking.hostName = "home-cp-1";
   networking.networkmanager.enable = true;
-  networking.firewall.enable = false;
-  networking.firewall.checkReversePath = false;
+
+  networking.firewall = {
+    enable = true;
+    checkReversePath = false;
+    allowPing = true;
+
+    allowedTCPPorts = [
+      22 # SSH
+
+      # k3s HA
+      # 2379
+      # 2380
+
+      4240 # Cilium Health
+      6443 # API Server
+      10250 # Kubelet
+    ];
+
+    allowedUDPPorts = [
+      8472 # Cilium VXLAN
+
+      # Wireguard Enc
+      # 51871
+    ];
+
+    trustedInterfaces = ["tailscale0"];
+  };
 
   fileSystems."/var/lib/rancher/k3s/storage" = {
     device = "/dev/disk/by-label/LOCALPV";
