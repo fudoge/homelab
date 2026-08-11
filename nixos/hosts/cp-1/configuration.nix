@@ -24,6 +24,12 @@ in {
 
     "net.bridge.bridge-nf-call-iptables" = 1;
     "net.bridge.bridge-nf-call-ip6tables" = 1;
+
+    # Workaround for Cilium L7/FQDN proxy traffic when Tailscale enables
+    # net.ipv4.conf.all.src_valid_mark=1.
+    # Without accept_local=1 on Cilium host-side veths, proxy-marked traffic
+    # can be dropped before LOCAL_IN.
+    "net.ipv4.conf.default.accept_local" = 1;
   };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];

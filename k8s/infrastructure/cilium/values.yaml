@@ -8,6 +8,18 @@ routingMode: native
 autoDirectNodeRoutes: true
 ipv4NativeRoutingCIDR: 10.42.0.0/16
 
+envoy:
+  xdsMode: split
+
+debug:
+  enabled: true
+
+bpf:
+  tproxy: true
+
+dnsProxy:
+  enableTransparentMode: false
+
 # Cilium Agent metrics
 prometheus:
   enabled: true
