@@ -42,6 +42,27 @@ in {
   networking.hostName = "home-cp-1";
   networking.networkmanager.enable = true;
 
+  networking.interfaces.ens18 = {
+    ipv4.addresses = [
+      {
+        address = "192.168.0.37 ";
+        prefixLength = 24;
+      }
+    ];
+  };
+  networking.interfaces.ens19 = {
+    ipv4.addresses = [
+      {
+        address = "192.168.192.10 ";
+        prefixLength = 24;
+      }
+    ];
+  };
+  networking.defaultGateway = {
+    address = "192.168.0.1";
+    interface = "ens18";
+  };
+
   networking.firewall = {
     enable = true;
     checkReversePath = false;
