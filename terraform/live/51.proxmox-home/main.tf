@@ -19,12 +19,6 @@ data "terraform_remote_state" "templates" {
   }
 }
 
-resource "proxmox_network_linux_bridge" "vmbr2" {
-  node_name = "pve-01"
-  name      = "vmbr2"
-  comment   = "In-proxmox network for tailscale subnet routing"
-}
-
 module "couchdb" {
   source       = "../../modules/proxmox_lxc_container"
   node_name    = local.node_name
@@ -58,10 +52,7 @@ module "k8s" {
   cpu_cores = 4
   memory    = 8192
 
-  networks = [
-    { bridge = "vmbr0", ip = "192.168.0.37/24", gw = "192.168.0.1" },
-    { bridge = "vmbr2", ip = "192.168.192.10/24", gw = "192.168.192.1" }
-  ]
+  networks    = []
   nameservers = []
 
   disk_size = 64

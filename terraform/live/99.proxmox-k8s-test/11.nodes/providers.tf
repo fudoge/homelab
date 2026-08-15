@@ -3,7 +3,8 @@ provider "proxmox" {
   api_token = var.proxmox_api_token
 
   ssh {
-    agent    = true
-    username = "root"
+    agent               = true
+    node_address_source = "dns"
+    username            = "root"
   }
 }

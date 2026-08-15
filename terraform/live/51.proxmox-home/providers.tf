@@ -4,7 +4,8 @@ provider "proxmox" {
   password = var.proxmox_password
 
   ssh {
-    agent    = true
-    username = "root"
+    agent               = true
+    node_address_source = "dns"
+    username            = "root"
   }
 }
