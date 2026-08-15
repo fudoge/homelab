@@ -45,7 +45,7 @@ in {
   networking.interfaces.ens18 = {
     ipv4.addresses = [
       {
-        address = "192.168.0.37 ";
+        address = "192.168.0.37";
         prefixLength = 24;
       }
     ];
@@ -53,7 +53,7 @@ in {
   networking.interfaces.ens19 = {
     ipv4.addresses = [
       {
-        address = "192.168.192.10 ";
+        address = "192.168.192.10";
         prefixLength = 24;
       }
     ];
