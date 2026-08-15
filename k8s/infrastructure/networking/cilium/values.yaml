@@ -1,6 +1,6 @@
 # References: https://artifacthub.io/packages/helm/cilium/cilium/1.20.0
 kubeProxyReplacement: true
-k8sServiceHost: 192.168.0.37
+k8sServiceHost: 192.168.0.40
 k8sServicePort: 6443
 
 devices: ens18
