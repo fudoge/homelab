@@ -134,6 +134,8 @@
     cilium-cli
     istioctl
     kubeseal
+    sops
+    fluxcd
     trivy
     jq
     yq-go
