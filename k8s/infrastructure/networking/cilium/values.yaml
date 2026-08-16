@@ -72,7 +72,7 @@ ipam:
 
 # Masquerade(NAT)
 enableIPv4Masquerade: true
-enableIpv6Masquerade: false
+enableIPv6Masquerade: false
 
 # NetworkPolicy
 enableNetworkPolicy: true
