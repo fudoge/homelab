@@ -185,9 +185,9 @@ sudo nixos-rebuild switch --flake '.#cp-1'
 
 Keep the flake selector quoted. Without quotes, some shells can treat `#cp-1` as a comment.
 
-## 8. Kubeconfig
+## 8. Bootstrap Cluster Access
 
-Use the local k3s kubeconfig only for initial bootstrap access, before the Tailscale operator API server proxy is reconciled.
+Use the local k3s kubeconfig only for initial bootstrap access. After Flux reconciles the Tailscale operator, use the Tailscale API server proxy instead.
 
 On the node, for bootstrap only:
 
@@ -203,6 +203,32 @@ If this temporary kubeconfig needs to be used from another machine, update the A
 sed -i 's/127.0.0.1/home-cp-1/' ~/.kube/config
 ```
 
+Flux needs the SOPS age private key once before it can decrypt encrypted Secrets from Git:
+
+```bash
+kubectl -n flux-system create secret generic sops-age \
+  --from-file=age.agekey="$HOME/.config/sops/age/keys.txt"
+```
+
+Grant the Tailscale API server proxy identity admin access once. The user value must match the Kubernetes user returned through the proxy; for this tailnet it is `fudoge@github`.
+
+```bash
+kubectl create clusterrolebinding tailscale-admin-fudoge \
+  --clusterrole=cluster-admin \
+  --user='fudoge@github'
+```
+
+If the binding already exists, apply it idempotently:
+
+```bash
+kubectl create clusterrolebinding tailscale-admin-fudoge \
+  --clusterrole=cluster-admin \
+  --user='fudoge@github' \
+  --dry-run=client -o yaml | kubectl apply -f -
+```
+
+## 9. Tailscale Kubeconfig
+
 After Flux installs the Tailscale operator with `apiServerProxyConfig.mode: "true"`, configure the normal kubeconfig from a Tailscale client:
 
 ```bash
@@ -215,10 +241,4 @@ Test it:
 kubectl get nodes
 ```
 
-The generated context uses the operator's API server proxy over the tailnet. Kubernetes RBAC still applies to the Tailscale identity that reaches the proxy, so grant access explicitly. For initial admin access:
-
-```bash
-kubectl create clusterrolebinding tailscale-admin-chaewoon \
-  --clusterrole=cluster-admin \
-  --user=<tailscale-user-email>
-```
+The generated context uses the operator's API server proxy over the tailnet. Kubernetes RBAC still applies to the Tailscale identity that reaches the proxy.
