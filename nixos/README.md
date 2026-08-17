@@ -150,22 +150,31 @@ After installation, shut down or reboot. In Proxmox:
 2. Set boot order so the OS disk is first.
 3. Boot the VM again.
 
-## 6. First Rebuild
+## 6. Local PV Disk
 
-After booting into the installed system:
+Use the separate disk, expected as `/dev/vdc`, after the OS is installed but before the first rebuild. The NixOS config mounts this disk by the `LOCALPV` filesystem label.
+
+Warning: these commands destroy data on `/dev/vdc`.
+
+```bash
+sudo parted /dev/vdc -- mklabel gpt
+sudo parted /dev/vdc -- mkpart primary ext4 0% 100%
+sudo mkfs.ext4 -L LOCALPV /dev/vdc1
+```
+
+Check that the label is visible:
+
+```bash
+lsblk -f
+```
+
+## 7. First Rebuild
+
+After booting into the installed system and preparing the local PV disk:
 
 ```bash
 git clone https://github.com/fudoge/homelab.git ~/homelab
 cd ~/homelab/nixos
-```
-
-If the local PV disk is not formatted and mounted yet, temporarily comment out any `LOCALPV` filesystem entry before rebuilding:
-
-```nix
-# fileSystems."/var/lib/rancher/k3s/storage" = {
-#   device = "/dev/disk/by-label/LOCALPV";
-#   fsType = "ext4";
-# };
 ```
 
 Then rebuild:
@@ -176,19 +185,11 @@ sudo nixos-rebuild switch --flake '.#cp-1'
 
 Keep the flake selector quoted. Without quotes, some shells can treat `#cp-1` as a comment.
 
-## 7. Tailscale
-
-Bring the node online:
-
-```bash
-sudo tailscale up
-```
-
-Log in through the URL printed by Tailscale.
-
 ## 8. Kubeconfig
 
-On the node:
+Use the local k3s kubeconfig only for initial bootstrap access, before the Tailscale operator API server proxy is reconciled.
+
+On the node, for bootstrap only:
 
 ```bash
 mkdir -p ~/.kube
@@ -196,50 +197,28 @@ sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 sudo chown $(id -u):$(id -g) ~/.kube/config
 ```
 
-Update the API server address in the copied kubeconfig if needed:
+If this temporary kubeconfig needs to be used from another machine, update the API server address to the node's LAN DNS name or static LAN IP:
 
 ```bash
-sed -i 's/127.0.0.1/home-cp-1.tail274d3c.ts.net/' ~/.kube/config
+sed -i 's/127.0.0.1/home-cp-1/' ~/.kube/config
 ```
 
-Copy it to a laptop:
+After Flux installs the Tailscale operator with `apiServerProxyConfig.mode: "true"`, configure the normal kubeconfig from a Tailscale client:
 
 ```bash
-scp home-cp-1.tail274d3c.ts.net:/home/chaewoon/.kube/config ~/.kube/config.home-cp-1
+tailscale configure kubeconfig tailscale-operator
 ```
 
 Test it:
 
 ```bash
-KUBECONFIG=~/.kube/config.home-cp-1 kubectl get nodes
+kubectl get nodes
 ```
 
-Optional merge:
+The generated context uses the operator's API server proxy over the tailnet. Kubernetes RBAC still applies to the Tailscale identity that reaches the proxy, so grant access explicitly. For initial admin access:
 
 ```bash
-KUBECONFIG=~/.kube/config:~/.kube/config.home-cp-1 kubectl config view --merge --flatten > ~/.kube/config.merged
-mv ~/.kube/config.merged ~/.kube/config
+kubectl create clusterrolebinding tailscale-admin-chaewoon \
+  --clusterrole=cluster-admin \
+  --user=<tailscale-user-email>
 ```
-
-## 9. Local PV Disk
-
-Use the separate disk, expected as `/dev/vdc`, after the OS is installed.
-
-Example:
-
-```bash
-sudo parted /dev/vdc -- mklabel gpt
-sudo parted /dev/vdc -- mkpart primary ext4 0% 100%
-sudo mkfs.ext4 -L LOCALPV /dev/vdc1
-```
-
-Then mount it declaratively in NixOS, for example:
-
-```nix
-fileSystems."/var/lib/rancher/k3s/storage" = {
-  device = "/dev/disk/by-label/LOCALPV";
-  fsType = "ext4";
-};
-```
-
-Adjust the mount path to match the storage class or local-path-provisioner configuration.

@@ -21,6 +21,12 @@ resource "tailscale_acl" "main" {
         "users"  = ["autogroup:nonroot", "root"]
       }
     ]
+
+    autoApprovers = {
+      services = {
+        "svc:*" = ["tag:k8s"]
+      }
+    }
   })
 
 }
