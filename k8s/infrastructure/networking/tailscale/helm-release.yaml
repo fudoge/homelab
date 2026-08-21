@@ -8,9 +8,6 @@ spec:
 
   targetNamespace: tailscale
 
-  install:
-    createNamespace: true
-
   chart:
     spec:
       chart: tailscale-operator
