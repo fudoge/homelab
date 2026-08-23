@@ -41,7 +41,7 @@ spec:
               memory: 300Mi
           volumeMounts:
             - mountPath: /etc/ntfy/server.yml
-              subPath: server.yml
+              subPath: server.yaml
               name: config-volume # generated via configMapGenerator from kustomization file
             - mountPath: /var/cache/ntfy
               name: cache-volume # cache volume mounted to persistent volume
