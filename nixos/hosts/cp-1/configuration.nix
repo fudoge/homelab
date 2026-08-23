@@ -89,6 +89,14 @@
     fsType = "ext4";
   };
 
+  systemd.tmpfiles.settings."local-pv" = {
+    "/var/lib/rancher/k3s/storage/ntfy".d = {
+      mode = "0770";
+      user = "root";
+      group = "3000";
+    };
+  };
+
   time.timeZone = "Asia/Seoul";
   i18n.defaultLocale = "en_US.UTF-8";
 
