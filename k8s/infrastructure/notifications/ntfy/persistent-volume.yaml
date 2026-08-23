@@ -14,4 +14,8 @@ spec:
   nodeAffinity:
     required:
       nodeSelectorTerms:
-        - matchLabels: kubernetes.io/hostname=home-cp-1
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - home-cp-1
