@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ntfy-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /var/lib/rancher/k3s/storage/ntfy
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchLabels: kubernetes.io/hostname=home-cp-1
