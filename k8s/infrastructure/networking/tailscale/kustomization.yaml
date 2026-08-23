@@ -4,4 +4,5 @@ resources:
   - namespace.yaml
   - helm-repo.yaml
   - helm-release.yaml
+  - proxygroup.yaml
   - secret-operator-oauth.sops.yaml
