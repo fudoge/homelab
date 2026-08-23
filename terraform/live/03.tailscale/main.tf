@@ -10,6 +10,11 @@ resource "tailscale_acl" "main" {
         src = ["*"]
         dst = ["*"]
         ip  = ["*"]
+      },
+      {
+        src = ["*"]
+        dst = ["tag:k8s"]
+        ip  = ["*"]
       }
     ]
 
@@ -24,7 +29,7 @@ resource "tailscale_acl" "main" {
 
     autoApprovers = {
       services = {
-        "svc:*" = ["tag:k8s"]
+        "tag:k8s" = ["tag:k8s"]
       }
     }
   })
