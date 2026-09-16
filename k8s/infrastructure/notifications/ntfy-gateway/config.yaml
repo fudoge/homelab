@@ -1,0 +1,11 @@
+server:
+  address: ":8080"
+
+ntfy:
+  endpoint: "http://ntfy.ntfy.svc.cluster.local"
+
+sources:
+  flux:
+    type: "flux"
+    topic: "flux"
+    secret_env: "FLUX_SECRET"

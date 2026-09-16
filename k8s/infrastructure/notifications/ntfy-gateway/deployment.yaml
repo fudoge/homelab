@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gateway
+  name: gateway
+  namespace: ntfy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - image: ghcr.io/fudoge/ntfy-gateway:v0.1.0
+          name: ntfy-gateway
+          volumeMounts:
+            - mountPath: /etc/ntfy-gateway/config.yml
+              subPath: config.yaml
+              name: config-volume
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            CONFIG_PATH: /etc/ntfy-gateway/config.yaml
+      volumes:
+        - name: config-volume
+          configMap: # uses configmap generator to parse config.yml to configmap
+            name: gateway-config
