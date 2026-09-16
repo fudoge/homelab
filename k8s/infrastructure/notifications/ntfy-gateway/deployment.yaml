@@ -26,7 +26,13 @@ spec:
             - containerPort: 8080
               name: http
           env:
-            CONFIG_PATH: /etc/ntfy-gateway/config.yaml
+            - name: CONFIG_PATH
+              value: /etc/ntfy-gateway/config.yml
+            - name: FLUX_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ntfy-gateway
+                  key: FLUX_SECRET
       volumes:
         - name: config-volume
           configMap: # uses configmap generator to parse config.yml to configmap
