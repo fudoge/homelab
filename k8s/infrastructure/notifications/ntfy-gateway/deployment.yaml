@@ -16,7 +16,7 @@ spec:
         app: gateway
     spec:
       containers:
-        - image: ghcr.io/fudoge/ntfy-gateway:v0.1.1
+        - image: ghcr.io/fudoge/ntfy-gateway:v0.1.2
           name: ntfy-gateway
           volumeMounts:
             - mountPath: /etc/ntfy-gateway/config.yml
