@@ -20,7 +20,9 @@ locals {
   ]
 }
 
-// backup-bucket
+#################
+# Backup Bucket #
+#################
 module "backup_s3_buckets" {
   source                     = "../../modules/aws_s3_archive"
   for_each                   = local.backup_buckets
@@ -31,7 +33,7 @@ module "backup_s3_buckets" {
   readonly_users             = ["arn:aws:iam::647502392199:user/chaewoon"]
 }
 
-// SNS
+# SNS
 resource "aws_sns_topic" "email_notifications" {
   name              = "noti-on-backup-failure-topic"
   kms_master_key_id = "alias/aws/sns"
@@ -43,7 +45,7 @@ resource "aws_sns_topic_subscription" "admin_email_subscription" {
   endpoint  = var.notification_email
 }
 
-// IAM user to backup
+# IAM user to backup
 resource "aws_iam_user" "backup_usr" {
   name = "archive-backup-usr"
   path = "/"
@@ -100,4 +102,70 @@ resource "aws_iam_policy" "backup_min" {
 resource "aws_iam_user_policy_attachment" "backup_attach" {
   user       = aws_iam_user.backup_usr.name
   policy_arn = aws_iam_policy.backup_min.arn
+}
+
+#################
+# Heartbeat API #
+#################
+
+## Lambda
+data "aws_iam_policy_document" "heartbeat_assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "heartbeat" {
+  name               = "${var.heartbeat_func_name}-role"
+  assume_role_policy = data.aws_iam_policy_document.heartbeat_assume_role.json
+}
+
+data "archive_file" "heartbeat" {
+  type        = "zip"
+  source_dir  = "${path.module}/lambda/heartbeat/src"
+  output_path = "${path.module}/lambda/heartbeat/function.zip"
+}
+
+resource "aws_lambda_function" "heartbeat" {
+  filename      = data.archive_file.heartbeat.output_path
+  function_name = var.heartbeat_func_name
+  role          = aws_iam_role.heartbeat.arn
+  handler       = "lambda_function.lambda_handler"
+  code_sha256   = data.archive_file.heartbeat.output_base64sha256
+
+  runtime = "python3.14"
+
+  environment {
+    variables = {
+      HEARTBEAT_TOKEN_SHA256 = var.heartbeat_token
+    }
+  }
+}
+
+
+data "aws_iam_policy_document" "heartbeat_put_metric_data" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "cloudwatch:PutMetricData"
+    ]
+
+    resources = [
+      aws_lambda_function.heartbeat.arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "heartbeat_put_metric_data" {
+  name   = "${var.heartbeat_func_name}-put-metric-data"
+  path   = "/"
+  policy = data.aws_iam_policy_document.heartbeat_put_metric_data.json
 }

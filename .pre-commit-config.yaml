@@ -58,6 +58,7 @@ repos:
         args:
           - --args=--severity=HIGH,CRITICAL
           - --args=--skip-dirs=**/.terraform
+          - --args=--ignorefile=__GIT_WORKING_DIR__/.trivyignore
       - id: terraform_docs
         stages: [pre-commit]
         files: ^terraform/modules/

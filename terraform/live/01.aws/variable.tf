@@ -14,3 +14,15 @@ variable "notification_email" {
   description = "Email address for SNS notification"
   type        = string
 }
+
+variable "heartbeat_func_name" {
+  description = "heartbeat function name"
+  type        = string
+  default     = "homelab-heartbeat"
+}
+
+variable "heartbeat_token" {
+  description = "heartbeat auth token(hashed)"
+  type        = string
+  sensitive   = true
+}
