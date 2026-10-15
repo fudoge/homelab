@@ -145,6 +145,7 @@ resource "aws_lambda_function" "heartbeat" {
   environment {
     variables = {
       HEARTBEAT_TOKEN_SHA256 = var.heartbeat_token
+      HEARTBEAT_NAMESPACE    = var.cloudwatch_heartbeat_ns
     }
   }
 }
@@ -158,9 +159,16 @@ data "aws_iam_policy_document" "heartbeat_put_metric_data" {
       "cloudwatch:PutMetricData"
     ]
 
-    resources = [
-      aws_lambda_function.heartbeat.arn
-    ]
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "cloudwatch:namespace"
+
+      values = [
+        var.cloudwatch_heartbeat_ns
+      ]
+    }
   }
 }
 

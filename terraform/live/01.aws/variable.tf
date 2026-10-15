@@ -26,3 +26,9 @@ variable "heartbeat_token" {
   type        = string
   sensitive   = true
 }
+
+variable "cloudwatch_heartbeat_ns" {
+  description = "cloudwatch heartbeat namespace"
+  type        = string
+  default     = "homelab/heartbeat"
+}

@@ -18,9 +18,10 @@ def lambda_handler(event, context):
         return {"statusCode": 401, "body: ": "Unauthorized"}
 
     # put metric data
+    namespace = os.environ["HEARTBEAT_NAMESPACE"]
     client = boto3.client("cloudwatch")
     response = client.put_metric_data(
-        Namespace="homelab/heartbeat",
+        Namespace=namespace,
         MetricData=[{"MetricName": "Heartbeat", "Value": 1, "Unit": "Count"}],
     )
 
