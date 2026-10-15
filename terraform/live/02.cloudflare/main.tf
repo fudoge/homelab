@@ -1,3 +1,21 @@
+data "terraform_remote_state" "aws" {
+  backend = "s3"
+  config = {
+    bucket = var.state_bucket_name
+    key    = "aws/terraform.tfstate"
+    region = var.region
+  }
+}
+
+locals {
+  # root domain and wildcard domain creates uses identical ACM validation CNAME, so you can pick only one.
+  validation = one([
+    for dvo in data.terraform_remote_state.aws.outputs.acm_domain_validation_options :
+    dvo if dvo.domain_name == "chaewoon.work"
+  ])
+  heartbeat_api_domain_name = data.terraform_remote_state.aws.outputs.heartbeat_api_domain_name
+}
+
 resource "cloudflare_dns_record" "minecraft_dns_srv_record" {
   zone_id = var.zone_id
   name    = var.mc_srv_name
@@ -51,6 +69,26 @@ resource "cloudflare_ruleset" "blog_redirect" {
       }
     }
   ]
+}
+
+resource "cloudflare_dns_record" "acm" {
+  zone_id = var.zone_id
+  name    = trimsuffix(local.validation.resource_record_name, ".")
+  content = trimsuffix(local.validation.resource_record_value, ".")
+  type    = "CNAME"
+  ttl     = 60
+  proxied = false
+  comment = "AWS ACM validation record"
+}
+
+resource "cloudflare_dns_record" "heartbeat" {
+  zone_id = var.zone_id
+  name    = "heartbeat"
+  content = local.heartbeat_api_domain_name
+  ttl     = 1
+  type    = "CNAME"
+  proxied = false
+  comment = "Homelab heartbeat API Gateway domain name"
 }
 
 resource "cloudflare_r2_bucket" "public_bucket" {
