@@ -22,7 +22,7 @@ metadata:
   namespace: flux-system
 spec:
   providerRef:
-    name: slack
+    name: slack-bot
   eventSeverity: info # error
   eventSources:
     - kind: Kustomization
