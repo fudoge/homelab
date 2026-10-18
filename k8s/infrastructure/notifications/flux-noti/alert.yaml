@@ -14,3 +14,20 @@ spec:
     - kind: GitRepository
       name: "*"
       namespace: flux-system
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: slack
+  namespace: flux-system
+spec:
+  providerRef:
+    name: slack
+  eventSeverity: info # error
+  eventSources:
+    - kind: Kustomization
+      name: "*"
+      namespace: flux-system
+    - kind: GitRepository
+      name: "*"
+      namespace: flux-system
