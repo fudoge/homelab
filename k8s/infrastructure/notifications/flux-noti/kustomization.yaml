@@ -3,6 +3,5 @@ kind: Kustomization
 resources:
   - alert.yaml
   - provider.yaml
-  - secret-ntfy-gateway.sops.yaml
   - secret-slack-bot-token.yaml
 namespace: flux-system
