@@ -13,9 +13,9 @@ def verify(token):
 def lambda_handler(event, context):
     # auth
     headers = {k.lower(): v for k, v in (event.get("headers") or {}).items()}
-    token = headers.get("authorization", "")[8:]  # Trim 'Bearer: '
+    token = headers.get("authorization", "")[7:]  # Trim 'Bearer: '
     if not verify(token):
-        return {"statusCode": 401, "body: ": "Unauthorized"}
+        return {"statusCode": 401, "body": "Unauthorized"}
 
     # put metric data
     namespace = os.environ["HEARTBEAT_NAMESPACE"]

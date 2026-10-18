@@ -208,10 +208,36 @@ resource "aws_iam_policy" "heartbeat_put_metric_data" {
   policy = data.aws_iam_policy_document.heartbeat_put_metric_data.json
 }
 
+resource "aws_iam_role_policy_attachment" "heartbeat_put_metric_data" {
+  role       = aws_iam_role.heartbeat.name
+  policy_arn = aws_iam_policy.heartbeat_put_metric_data.arn
+}
+
+resource "aws_iam_role_policy_attachment" "heartbeat_cloudwatch_logs" {
+  role       = aws_iam_role.heartbeat.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_cloudwatch_log_group" "heartbeat" {
+  name              = "/aws/lambda/${var.heartbeat_func_name}"
+  retention_in_days = 1
+}
+
 ## API Gateway
 resource "aws_apigatewayv2_api" "heartbeat" {
   name          = "heartbeat"
   protocol_type = "HTTP"
+}
+
+resource "aws_lambda_permission" "lambda_permission" {
+  statement_id  = "AllowHeartbeatAPIInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.heartbeat.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  # The /* part allows invocation from any stage, method and resource path
+  # within API Gateway.
+  source_arn = "${aws_apigatewayv2_api.heartbeat.execution_arn}/*"
 }
 
 resource "aws_apigatewayv2_integration" "heartbeat" {
@@ -231,16 +257,9 @@ resource "aws_apigatewayv2_route" "heartbeat" {
 }
 
 resource "aws_apigatewayv2_stage" "heartbeat" {
-  api_id = aws_apigatewayv2_api.heartbeat.id
-  name   = "homelab"
-}
-
-resource "aws_apigatewayv2_deployment" "heartbeat" {
-  api_id = aws_apigatewayv2_api.heartbeat.id
-
-  lifecycle {
-    create_before_destroy = true
-  }
+  api_id      = aws_apigatewayv2_api.heartbeat.id
+  name        = "homelab"
+  auto_deploy = true
 }
 
 resource "aws_apigatewayv2_domain_name" "heartbeat" {
