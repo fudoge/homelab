@@ -51,3 +51,9 @@ variable "gh_username" {
   description = "GitHub username"
   type        = string
 }
+
+variable "purelymail_ownership_record_value" {
+  description = "PurelyMail ownership record (TXT)"
+  type        = string
+  sensitive   = true
+}
