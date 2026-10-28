@@ -183,6 +183,10 @@ Then rebuild:
 sudo nixos-rebuild switch --flake '.#cp-1'
 ```
 
+The rebuild creates `/var/lib/rancher/k3s/storage/{prometheus,alertmanager,grafana}` on the `LOCALPV` disk with the ownership expected by the kube-prometheus-stack pods. Apply this NixOS change before Flux installs the observability resources. Check the mount and directories with `findmnt /var/lib/rancher/k3s/storage` and `ls -ld /var/lib/rancher/k3s/storage/{prometheus,alertmanager,grafana}`.
+
+Flux creates one static local PV for each component and binds it to its PVC through the `observability-local` StorageClass. The PVs are pinned to `home-cp-1`, so those pods cannot move to another node with their data. PV capacities are 20Gi for Prometheus and 2Gi each for Alertmanager and Grafana; local PV capacity is a scheduling declaration, not a disk quota. Monitor free space on the 256 GB `LOCALPV` disk. The PVs use `Retain`, so deleting a PVC does not erase its data or automatically make the PV reusable.
+
 Keep the flake selector quoted. Without quotes, some shells can treat `#cp-1` as a comment.
 
 ## 8. Bootstrap Cluster Access
