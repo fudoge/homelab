@@ -90,10 +90,20 @@
   };
 
   systemd.tmpfiles.settings."local-pv" = {
-    "/var/lib/rancher/k3s/storage/ntfy".d = {
+    "/var/lib/rancher/k3s/storage/prometheus".d = {
       mode = "0770";
-      user = "root";
-      group = "3000";
+      user = "1000";
+      group = "2000";
+    };
+    "/var/lib/rancher/k3s/storage/alertmanager".d = {
+      mode = "0770";
+      user = "1000";
+      group = "2000";
+    };
+    "/var/lib/rancher/k3s/storage/grafana".d = {
+      mode = "0770";
+      user = "472";
+      group = "472";
     };
   };
 
