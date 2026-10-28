@@ -17,7 +17,6 @@ Then add the file to this directory's `kustomization.yaml`. Do not commit the
 plaintext token. The repository's `.sops.yaml` encrypts Kubernetes `data` and
 `stringData` fields.
 
-The Lambda publishes the `homelab/heartbeat` CloudWatch metric, but the
-Terraform configuration does not yet create an alarm for missing datapoints.
-Until that alarm and its notification action exist, a stopped heartbeat will
-not notify anyone.
+The Lambda publishes the `homelab/heartbeat` CloudWatch metric. The
+`homelab-heartbeat-missing` CloudWatch alarm treats missing datapoints as
+breaching and invokes `homelab-heartbeat-slack-notify` on ALARM and OK transitions.
