@@ -4,3 +4,4 @@ resources:
   - certificates
   - networking
   - notifications
+  - observabilities

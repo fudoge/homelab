@@ -1,0 +1,49 @@
+prometheusOperator:
+  admissionWebhooks:
+    certManager:
+      enabled: true
+
+# k3s runs with --disable-kube-proxy; Cilium replaces it.
+kubeProxy:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    retention: 15d
+    retentionSize: 18GiB
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: observability-local
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+          selector:
+            matchLabels:
+              observability-storage: prometheus
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: observability-local
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+          selector:
+            matchLabels:
+              observability-storage: alertmanager
+
+grafana:
+  persistence:
+    enabled: true
+    storageClassName: observability-local
+    volumeName: observability-grafana
+    accessModes:
+      - ReadWriteOnce
+    size: 2Gi
