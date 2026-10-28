@@ -38,6 +38,12 @@ alertmanager:
           selector:
             matchLabels:
               observability-storage: alertmanager
+    alertmanagerConfigMatcherStrategy:
+      type: OnNamespaceExceptForAlertmanagerNamespace
+
+  config:
+    route:
+      routes: []
 
 grafana:
   persistence:

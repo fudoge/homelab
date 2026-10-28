@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: watchdog-heartbeat
+  namespace: observability
+spec:
+  route:
+    receiver: heartbeat
+    groupBy:
+      - alertname
+    groupWait: 0s
+    groupInterval: 1m
+    repeatInterval: 1m
+    matchers:
+      - name: alertname
+        value: Watchdog
+        matchType: "="
+  receivers:
+    - name: heartbeat
+      webhookConfigs:
+        - url: https://heartbeat.chaewoon.work/api/heartbeat
+          sendResolved: false
+          httpConfig:
+            bearerTokenSecret:
+              name: heartbeat-token
+              key: token
