@@ -1,3 +1,7 @@
+locals {
+  route_key = "POST /api/heartbeat"
+}
+
 ## Lambda
 data "aws_iam_policy_document" "heartbeat_assume_role" {
   statement {
@@ -85,8 +89,9 @@ resource "aws_cloudwatch_log_group" "heartbeat" {
 
 ## API Gateway
 resource "aws_apigatewayv2_api" "heartbeat" {
-  name          = "heartbeat"
-  protocol_type = "HTTP"
+  name                         = "heartbeat"
+  protocol_type                = "HTTP"
+  disable_execute_api_endpoint = true
 }
 
 resource "aws_lambda_permission" "lambda_permission" {
@@ -111,7 +116,7 @@ resource "aws_apigatewayv2_integration" "heartbeat" {
 
 resource "aws_apigatewayv2_route" "heartbeat" {
   api_id    = aws_apigatewayv2_api.heartbeat.id
-  route_key = "POST /api/heartbeat"
+  route_key = local.route_key
 
   target = "integrations/${aws_apigatewayv2_integration.heartbeat.id}"
 }
@@ -120,6 +125,12 @@ resource "aws_apigatewayv2_stage" "heartbeat" {
   api_id      = aws_apigatewayv2_api.heartbeat.id
   name        = "homelab"
   auto_deploy = true
+
+  route_settings {
+    route_key              = local.route_key
+    throttling_burst_limit = 3
+    throttling_rate_limit  = 0.05
+  }
 }
 
 resource "aws_apigatewayv2_domain_name" "heartbeat" {

@@ -13,8 +13,14 @@ def verify(token):
 def lambda_handler(event, context):
     # auth
     headers = {k.lower(): v for k, v in (event.get("headers") or {}).items()}
-    token = headers.get("authorization", "")[7:]  # Trim 'Bearer: '
-    if not verify(token):
+    scheme, separator, token = headers.get("authorization", "").partition(" ")
+    if (
+        scheme.lower() != "bearer"
+        or not separator
+        or not token
+        or any(char.isspace() for char in token)
+        or not verify(token)
+    ):
         return {"statusCode": 401, "body": "Unauthorized"}
 
     # put metric data
