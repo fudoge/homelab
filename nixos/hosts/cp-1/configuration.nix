@@ -135,6 +135,9 @@
       "--disable-kube-proxy"
       "--disable-network-policy"
 
+      "--kube-apiserver-arg=service-account-issuer=https://oidc.chaewoon.work"
+      "--kube-apiserver-arg=service-account-jwks-uri=https://oidc.chaewoon.work/openid/v1/jwks"
+
       "--secrets-encryption"
       "--secrets-encryption-provider=secretbox"
     ];
