@@ -1,6 +1,7 @@
 .vscode
 .DS_Store
 .terraform
+.wrangler
 __pycache__
 terraform/live/*/lambda/*/function.zip
 terraform/modules/**/.terraform.lock.hcl
