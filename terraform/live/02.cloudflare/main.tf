@@ -13,7 +13,6 @@ locals {
     for dvo in data.terraform_remote_state.aws.outputs.acm_domain_validation_options :
     dvo if dvo.domain_name == "chaewoon.work"
   ])
-  heartbeat_api_domain_name = data.terraform_remote_state.aws.outputs.heartbeat_api_domain_name
 }
 
 resource "cloudflare_dns_record" "minecraft_dns_srv_record" {
@@ -79,16 +78,6 @@ resource "cloudflare_dns_record" "acm" {
   ttl     = 60
   proxied = false
   comment = "AWS ACM validation record"
-}
-
-resource "cloudflare_dns_record" "heartbeat" {
-  zone_id = var.zone_id
-  name    = "heartbeat"
-  content = local.heartbeat_api_domain_name
-  ttl     = 1
-  type    = "CNAME"
-  proxied = false
-  comment = "Homelab heartbeat API Gateway domain name"
 }
 
 resource "cloudflare_r2_bucket" "public_bucket" {

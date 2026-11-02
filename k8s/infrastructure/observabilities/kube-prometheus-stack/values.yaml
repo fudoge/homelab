@@ -25,6 +25,9 @@ prometheus:
               observability-storage: prometheus
 
 alertmanager:
+  serviceAccount:
+    name: observability-kube-prometh-alertmanager
+
   alertmanagerSpec:
     volumes:
       - name: aws-token
