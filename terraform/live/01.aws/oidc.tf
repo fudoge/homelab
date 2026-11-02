@@ -47,6 +47,6 @@ module "alertmanager" {
   oidc_provider_arn         = aws_iam_openid_connect_provider.oidc.arn
   oidc_issuer_url           = local.oidc_url
   service_account_namespace = "observability"
-  service_account_name      = "kube-prometheus-stack-alertmanager"
+  service_account_name      = "observability-kube-prometh-alertmanager"
   managed_policy_arns       = [aws_iam_policy.alertmanager.arn]
 }

@@ -1,7 +1,3 @@
-locals {
-  route_key = "POST /api/heartbeat"
-}
-
 ## Lambda
 data "aws_iam_policy_document" "heartbeat_assume_role" {
   statement {
@@ -38,9 +34,8 @@ resource "aws_lambda_function" "heartbeat" {
 
   environment {
     variables = {
-      HEARTBEAT_TOKEN_SHA256 = var.heartbeat_token
-      HEARTBEAT_NAMESPACE    = var.cloudwatch_heartbeat_ns
-      HEARTBEAT_TOPIC_ARN    = aws_sns_topic.heartbeat_topic.arn
+      HEARTBEAT_NAMESPACE = var.cloudwatch_heartbeat_ns
+      HEARTBEAT_TOPIC_ARN = aws_sns_topic.heartbeat_topic.arn
     }
   }
 }
@@ -88,70 +83,8 @@ resource "aws_cloudwatch_log_group" "heartbeat" {
   retention_in_days = 1
 }
 
-## API Gateway
-resource "aws_apigatewayv2_api" "heartbeat" {
-  name                         = "heartbeat"
-  protocol_type                = "HTTP"
-  disable_execute_api_endpoint = true
-}
-
-resource "aws_lambda_permission" "lambda_permission" {
-  statement_id  = "AllowHeartbeatAPIInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.heartbeat.function_name
-  principal     = "apigateway.amazonaws.com"
-
-  # The /* part allows invocation from any stage, method and resource path
-  # within API Gateway.
-  source_arn = "${aws_apigatewayv2_api.heartbeat.execution_arn}/*"
-}
-
-resource "aws_apigatewayv2_integration" "heartbeat" {
-  api_id           = aws_apigatewayv2_api.heartbeat.id
-  integration_type = "AWS_PROXY"
-
-  connection_type    = "INTERNET"
-  integration_method = "POST"
-  integration_uri    = aws_lambda_function.heartbeat.invoke_arn
-}
-
-resource "aws_apigatewayv2_route" "heartbeat" {
-  api_id    = aws_apigatewayv2_api.heartbeat.id
-  route_key = local.route_key
-
-  target = "integrations/${aws_apigatewayv2_integration.heartbeat.id}"
-}
-
-resource "aws_apigatewayv2_stage" "heartbeat" {
-  api_id      = aws_apigatewayv2_api.heartbeat.id
-  name        = "homelab"
-  auto_deploy = true
-
-  route_settings {
-    route_key              = local.route_key
-    throttling_burst_limit = 3
-    throttling_rate_limit  = 0.05
-  }
-}
-
-resource "aws_apigatewayv2_domain_name" "heartbeat" {
-  domain_name = "heartbeat.chaewoon.work"
-
-  domain_name_configuration {
-    certificate_arn = aws_acm_certificate.cert.arn
-    endpoint_type   = "REGIONAL"
-    security_policy = "TLS_1_2"
-  }
-}
-
-resource "aws_apigatewayv2_api_mapping" "heartbeat" {
-  api_id      = aws_apigatewayv2_api.heartbeat.id
-  domain_name = aws_apigatewayv2_domain_name.heartbeat.id
-  stage       = aws_apigatewayv2_stage.heartbeat.id
-}
-
 ## SNS
-# We use AWS-managed key for encryption
+# Using AWS-managed key for encryption
 resource "aws_sns_topic" "heartbeat_topic" {
   name              = "homelab-heartbeat"
   kms_master_key_id = "alias/aws/sns"

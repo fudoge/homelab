@@ -16,12 +16,6 @@ variable "heartbeat_func_name" {
   default     = "homelab-heartbeat"
 }
 
-variable "heartbeat_token" {
-  description = "heartbeat auth token(hashed)"
-  type        = string
-  sensitive   = true
-}
-
 variable "cloudwatch_heartbeat_ns" {
   description = "cloudwatch heartbeat namespace"
   type        = string
