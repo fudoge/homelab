@@ -1,22 +1,14 @@
 # Watchdog heartbeat
 
-`alertmanager-config-watchdog.yaml` sends the always-firing Watchdog alert to
-`https://heartbeat.chaewoon.work/api/heartbeat` every minute. The AWS Lambda
-expects the original token as an `Authorization: Bearer` credential. Terraform
-stores only its SHA-256 hash, so that hash cannot be used as the token.
+`alertmanager-config-watchdog.yaml` publishes the always-firing Watchdog
+alert to the `homelab-heartbeat` SNS topic every minute. Alertmanager uses a
+projected token from the chart's existing
+`kube-prometheus-stack-alertmanager` service account to assume the
+`homelab-alertmanager` IAM role. The SNS-triggered Lambda records the
+`homelab/heartbeat` CloudWatch metric.
 
-Before deploying the AlertmanagerConfig, fill in `stringData.token` in
-`secret-heartbeat-token.yaml` with the original token. From the repository root,
-encrypt it with:
+The HTTP API and encrypted `heartbeat-token` Secret remain available during
+the switch. The Lambda still accepts the Bearer token on the HTTP path.
 
-```bash
-sops --encrypt --in-place k8s/infrastructure/observabilities/kube-prometheus-stack/alertmanager/secret-heartbeat-token.yaml
-```
-
-Then add the file to this directory's `kustomization.yaml`. Do not commit the
-plaintext token. The repository's `.sops.yaml` encrypts Kubernetes `data` and
-`stringData` fields.
-
-The Lambda publishes the `homelab/heartbeat` CloudWatch metric. The
 `homelab-heartbeat-missing` CloudWatch alarm treats missing datapoints as
 breaching and invokes `homelab-heartbeat-slack-notify` on ALARM and OK transitions.

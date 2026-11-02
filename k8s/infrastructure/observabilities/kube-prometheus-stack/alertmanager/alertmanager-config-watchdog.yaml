@@ -17,10 +17,9 @@ spec:
         matchType: "="
   receivers:
     - name: heartbeat
-      webhookConfigs:
-        - url: https://heartbeat.chaewoon.work/api/heartbeat
+      snsConfigs:
+        - topicARN: arn:aws:sns:ap-northeast-2:647502392199:homelab-heartbeat
           sendResolved: false
-          httpConfig:
-            bearerTokenSecret:
-              name: heartbeat-token
-              key: token
+          message: Watchdog
+          sigv4:
+            region: ap-northeast-2

@@ -26,6 +26,27 @@ prometheus:
 
 alertmanager:
   alertmanagerSpec:
+    volumes:
+      - name: aws-token
+        projected:
+          sources:
+            - serviceAccountToken:
+                path: aws
+                audience: sts.amazonaws.com
+                expirationSeconds: 3600
+    volumeMounts:
+      - name: aws-token
+        mountPath: /var/run/secrets/tokens
+        readOnly: true
+    containers:
+      - name: alertmanager
+        env:
+          - name: AWS_ROLE_ARN
+            value: arn:aws:iam::647502392199:role/homelab-alertmanager
+          - name: AWS_WEB_IDENTITY_TOKEN_FILE
+            value: /var/run/secrets/tokens/aws
+          - name: AWS_REGION
+            value: ap-northeast-2
     storage:
       volumeClaimTemplate:
         spec:

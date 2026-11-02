@@ -40,6 +40,7 @@ resource "aws_lambda_function" "heartbeat" {
     variables = {
       HEARTBEAT_TOKEN_SHA256 = var.heartbeat_token
       HEARTBEAT_NAMESPACE    = var.cloudwatch_heartbeat_ns
+      HEARTBEAT_TOPIC_ARN    = aws_sns_topic.heartbeat_topic.arn
     }
   }
 }
@@ -147,4 +148,28 @@ resource "aws_apigatewayv2_api_mapping" "heartbeat" {
   api_id      = aws_apigatewayv2_api.heartbeat.id
   domain_name = aws_apigatewayv2_domain_name.heartbeat.id
   stage       = aws_apigatewayv2_stage.heartbeat.id
+}
+
+## SNS
+# We use AWS-managed key for encryption
+resource "aws_sns_topic" "heartbeat_topic" {
+  name              = "homelab-heartbeat"
+  kms_master_key_id = "alias/aws/sns"
+}
+
+resource "aws_sns_topic_subscription" "user_updates_sqs_target" {
+  topic_arn = aws_sns_topic.heartbeat_topic.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.heartbeat.arn
+
+  depends_on = [aws_lambda_permission.allow_sns_heartbeat]
+}
+
+resource "aws_lambda_permission" "allow_sns_heartbeat" {
+  statement_id  = "AllowHeartbeatLambdaInvokeFromSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.heartbeat.function_name
+  principal     = "sns.amazonaws.com"
+
+  source_arn = aws_sns_topic.heartbeat_topic.arn
 }
