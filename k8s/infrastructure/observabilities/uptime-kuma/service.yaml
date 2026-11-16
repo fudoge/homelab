@@ -6,5 +6,6 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    port: 80
-    toPort: 3001
+    - name: http
+      port: 80
+      targetPort: 3001
