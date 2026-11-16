@@ -105,6 +105,11 @@
       user = "472";
       group = "472";
     };
+    "/var/lib/rancher/k3s/storage/uptime-kuma".d = {
+      mode = "0770";
+      user = "1020";
+      group = "1020";
+    };
   };
 
   time.timeZone = "Asia/Seoul";
