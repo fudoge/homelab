@@ -4,7 +4,6 @@ resources:
   - alertmanager
   - helm-release.yaml
   - helm-repo.yaml
-  - namespace.yaml
   - storage.yaml
 
 configMapGenerator:
