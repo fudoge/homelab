@@ -4,3 +4,4 @@ resources:
   - kube-prometheus-stack
   - uptime-kuma
   - namespace.yaml
+  - storage.yaml
