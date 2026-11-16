@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: uptime-kuma
+  namespace: observability
+spec:
+  type: ClusterIP
+  ports:
+    port: 80
+    toPort: 3001
