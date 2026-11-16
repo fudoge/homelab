@@ -5,6 +5,8 @@ metadata:
   namespace: observability
 spec:
   type: ClusterIP
+  selector:
+    app: uptime-kuma
   ports:
     - name: http
       port: 80
